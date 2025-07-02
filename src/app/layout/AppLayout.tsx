@@ -61,6 +61,7 @@ export default function AppLayout() {
           <Link to="/form" className="block p-2 rounded hover:bg-gray-700">Form</Link>
           <Link to="/chart" className="block p-2 rounded hover:bg-gray-700">Chart</Link>
           <Link to="/table" className="block p-2 rounded hover:bg-gray-700">Table</Link>
+          <Link to="/rup" className="block p-2 rounded hover:bg-gray-700">Get Rup</Link>
         </nav>
       </aside>
       <div className={`${responsive ? '' : 'hidden'}`}>

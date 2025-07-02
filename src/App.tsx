@@ -5,6 +5,7 @@ import AppLayout from './app/layout/AppLayout';
 import DashboardHome from './features/dashboard/ui/DashboardHome';
 import FormPage from './features/example/ui/FormPage';
 import TablePage from './features/example/ui/TablePage';
+import GetDataPage from './features/example/ui/GetdataPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="form" element={<FormPage />} />
         <Route path="chart" element={<FormPage />} />
         <Route path="table" element={<TablePage />} />
+        <Route path="rup" element={<GetDataPage />} />
       </Route>
     </Routes>
   );
