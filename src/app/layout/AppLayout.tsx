@@ -58,7 +58,9 @@ export default function AppLayout() {
         <div className="p-4 font-bold text-xl border-b border-gray-700">App</div>
         <nav className="p-4 space-y-2">
           <Link to="/" className="block p-2 rounded hover:bg-gray-700">Dashboard</Link>
-          <Link to="/settings" className="block p-2 rounded hover:bg-gray-700">Settings</Link>
+          <Link to="/form" className="block p-2 rounded hover:bg-gray-700">Form</Link>
+          <Link to="/chart" className="block p-2 rounded hover:bg-gray-700">Chart</Link>
+          <Link to="/table" className="block p-2 rounded hover:bg-gray-700">Table</Link>
         </nav>
       </aside>
       <div className={`${responsive ? '' : 'hidden'}`}>
@@ -82,7 +84,10 @@ export default function AppLayout() {
 
         {/* Page content */}
         <main className="flex-1 overflow-auto p-6 bg-gray-50">
-          <Outlet />
+          <div className="bg-white p-6 rounded shadow">
+            <Outlet />
+          </div>
+            
         </main>
       </div>
     </div>
