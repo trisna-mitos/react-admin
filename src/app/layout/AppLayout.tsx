@@ -11,45 +11,28 @@ export default function AppLayout() {
   );
 }*/
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import DrawerSidebar, { type DrawerSidebarProps } from './drawer-sidebar';
+import DrawerSidebar from './drawer-sidebar';
 
 export default function AppLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [responsive, setResponsive] = useState(false);
-
-  console.log(responsive)
-
-  const  a: DrawerSidebarProps = {
-    content: "jal",
-    tittle: "88"
-  };
-
-  console.log("dari sini",location.pathname)
-  let pageTitle = 'Page Title'; // Default title
+  const [responsive] = useState(false);
+  let pageTitle = 'Dashboard'; // Default title
   if (location.pathname === '/' || location.pathname === '/dashboard') {
-      pageTitle = 'Dashboard';
-    } else if (location.pathname === '/about') {
-      pageTitle = 'About';
-    } else if (location.pathname === '/contact') {
-      pageTitle = 'Contact';
-    }
-  //  useEffect(() => {
-    
-  //   const handleResize = () => {
-  //     setResponsive(window.innerWidth < 768);
-  //   };
-
-  //   window.addEventListener('resize', handleResize);
-
-  //   handleResize();
-
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, []);
+    pageTitle = 'Dashboard';
+  } else if (location.pathname === '/form') {
+    pageTitle = 'Form';
+  } else if (location.pathname === '/chart') {
+    pageTitle = 'Chart';
+  } else if (location.pathname === '/table') {
+    pageTitle = 'Table';
+  } else if (location.pathname === '/rup') {
+    pageTitle = 'Get RUP';
+  } else if (location.pathname === '/products') {
+    pageTitle = 'Products';
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -62,6 +45,7 @@ export default function AppLayout() {
           <Link to="/chart" className="block p-2 rounded hover:bg-gray-700">Chart</Link>
           <Link to="/table" className="block p-2 rounded hover:bg-gray-700">Table</Link>
           <Link to="/rup" className="block p-2 rounded hover:bg-gray-700">Get Rup</Link>
+          <Link to="/products" className="block p-2 rounded hover:bg-gray-700">Products</Link>
         </nav>
       </aside>
       <div className={`${responsive ? '' : 'hidden'}`}>
