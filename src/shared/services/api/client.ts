@@ -1,13 +1,17 @@
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
+import { API_CONFIG } from '../../../config/api.config';
 
 class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
-      timeout: 30000,
+      baseURL: API_CONFIG.baseURL,
+      timeout: API_CONFIG.timeout,
       headers: {
         'Content-Type': 'application/json',
+        // Tambahkan API key di header jika diperlukan
+        ...(API_CONFIG.apiKey && { 'X-API-Key': API_CONFIG.apiKey }),
       },
     });
 
@@ -22,6 +26,13 @@ class ApiClient {
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+        
+        // Tambahkan signature atau encryption jika diperlukan
+        if (API_CONFIG.apiSecret) {
+          // Implementasi signature atau encryption
+          config.headers['X-API-Signature'] = this.generateSignature(config);
+        }
+        
         return config;
       },
       (error) => Promise.reject(error)
@@ -38,6 +49,16 @@ class ApiClient {
         return Promise.reject(error);
       }
     );
+  }
+
+  private generateSignature(config: any): string {
+    // Implementasi signature generation
+    // Contoh sederhana dengan timestamp
+    const timestamp = Date.now().toString();
+    const data = JSON.stringify(config.data || {});
+    
+    // Dalam implementasi nyata, gunakan HMAC-SHA256 atau metode yang lebih aman
+    return btoa(`${timestamp}:${data}:${API_CONFIG.apiSecret}`);
   }
 
   async get<T>(url: string, config = {}): Promise<AxiosResponse<T>> {
