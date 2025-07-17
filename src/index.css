@@ -1,3 +1,32 @@
+@import "@heroui/react/dist/themes/light.css";
+@import "@heroui/react/dist/themes/dark.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Custom CSS variables for consistent theming */
+:root {
+  --app-sidebar-width: 280px;
+  --app-navbar-height: 64px;
+}
+
+/* Custom component styles */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
+  margin-left: var(--app-sidebar-width);
+  margin-top: var(--app-navbar-height);
+  padding: 1.5rem;
+}
