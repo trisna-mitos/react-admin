@@ -6,6 +6,7 @@ import DashboardHome from './features/dashboard/ui/DashboardHome';
 import FormPage from './features/example/ui/FormPage';
 import TablePage from './features/example/ui/TablePage';
 import GetDataPage from './features/example/ui/GetdataPage';
+import RupDataPage from './features/rup-data/RupDataPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="chart" element={<FormPage />} />
         <Route path="table" element={<TablePage />} />
         <Route path="rup" element={<GetDataPage />} />
+        <Route path="rup-data" element={<RupDataPage />} />
       </Route>
     </Routes>
   );
