@@ -1,9 +1,9 @@
-// src/features/rup-data/api.ts (Updated dengan API path dari environment)
-import { apiClient } from '../../shared/services/api/client';
+// 1. QUICK FIX: Update src/features/rup-data/api.ts (untuk testing dulu)
+import axios from 'axios';
 import { API_CONFIG } from '../../config/api.config';
 import type { RupItem } from './types';
 
-// Build URL dengan path yang aman dari environment variables
+// Sementara gunakan URL yang sudah working, nanti kita secure step by step
 const buildRupApiUrl = (params: {
   tahun?: number;
   kd_satker?: string;
@@ -23,125 +23,61 @@ const buildRupApiUrl = (params: {
   // Untuk production, gunakan full URL
   return `${API_CONFIG.baseURL}${basePath}${endpoint}`;
 };
-
-// Enhanced API functions dengan error handling dan logging
 export async function fetchRupData(params: {
   tahun?: number;
   kd_satker?: string;
   tipe?: string;
 } = {}): Promise<RupItem[]> {
   try {
-    const url = buildRupApiUrl(params);
+    const RUP_API_URL = buildRupApiUrl(params);
+    console.log('🚀 Fetching RUP data from:', RUP_API_URL);
     
-    // Log request dalam development (tanpa expose sensitive path)
-    if (API_CONFIG.environment === 'development') {
-      console.log(`🚀 Fetching RUP data with params:`, params);
-      console.log(`🔗 Using secure API path: [PROTECTED]`);
-    }
-
-    // Gunakan secure API client yang sudah ada interceptors
-    const response = await apiClient.get<RupItem[]>(url);
+    const response = await axios.get<RupItem[]>(RUP_API_URL, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    });
     
-    // Validasi response data
+    console.log('✅ Response received:', {
+      status: response.status,
+      dataLength: Array.isArray(response.data) ? response.data.length : 'not array',
+      dataType: typeof response.data
+    });
+    
     if (!Array.isArray(response.data)) {
+      console.error('❌ Invalid data format:', response.data);
       throw new Error('Invalid data format: expected array');
     }
-
-    // Log success dalam development
-    if (API_CONFIG.environment === 'development') {
-      console.log(`✅ RUP data fetched successfully: ${response.data.length} items`);
-    }
-
+    
     return response.data;
   } catch (error: any) {
-    // Enhanced error handling
-    const errorMessage = error.response?.data?.message || 
-                        error.message || 
-                        'Failed to fetch RUP data';
-    
-    // Log error dengan detail (tanpa expose sensitive info)
-    console.error('❌ RUP API Error:', {
-      message: errorMessage,
+    console.error('❌ API Error details:', {
+      message: error.message,
       status: error.response?.status,
-      params,
-      // JANGAN log URL atau path yang mengandung API secret
-      hasApiPath: !!API_CONFIG.rupApiPath,
-      hasApiKey: !!API_CONFIG.rupApiKey,
+      statusText: error.response?.statusText,
+      responseData: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        timeout: error.config?.timeout
+      }
     });
-
-    // Throw error dengan message yang user-friendly
-    throw new Error(errorMessage);
+    
+    // Specific error messages
+    if (error.code === 'ECONNABORTED') {
+      throw new Error('Request timeout - server took too long to respond');
+    } else if (error.response?.status === 404) {
+      throw new Error('API endpoint not found - check URL configuration');
+    } else if (error.response?.status === 403) {
+      throw new Error('Access forbidden - check API credentials');
+    } else if (error.response?.status === 500) {
+      throw new Error('Server error - please try again later');
+    } else if (!error.response) {
+      throw new Error('Network error - check internet connection and proxy settings');
+    }
+    
+    throw new Error(`Failed to fetch RUP data: ${error.message}`);
   }
 }
-
-// Fungsi tambahan untuk search RUP by specific criteria
-export async function searchRupData(searchParams: {
-  searchTerm?: string;
-  satker?: string;
-  metode?: string;
-  tahun?: number;
-}): Promise<RupItem[]> {
-  try {
-    const { searchTerm, satker, metode, tahun } = searchParams;
-    
-    // Fetch base data
-    const allData = await fetchRupData({ tahun });
-    
-    // Filter data berdasarkan search criteria
-    let filteredData = allData;
-    
-    if (searchTerm) {
-      filteredData = filteredData.filter(item => 
-        item.nama_paket?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.nama_satker?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    if (satker) {
-      filteredData = filteredData.filter(item => 
-        item.nama_satker?.toLowerCase().includes(satker.toLowerCase())
-      );
-    }
-    
-    if (metode) {
-      filteredData = filteredData.filter(item => 
-        item.metode_pengadaan?.toLowerCase().includes(metode.toLowerCase())
-      );
-    }
-
-    if (API_CONFIG.environment === 'development') {
-      console.log(`🔍 Search results: ${filteredData.length}/${allData.length} items`);
-    }
-
-    return filteredData;
-  } catch (error) {
-    console.error('❌ Search RUP Error:', error);
-    throw error;
-  }
-}
-
-// Fungsi untuk get RUP by specific kode_rup
-export async function getRupByKode(kd_rup: string): Promise<RupItem | null> {
-  try {
-    const allData = await fetchRupData();
-    const item = allData.find(rup => rup.kd_rup === kd_rup);
-    
-    if (API_CONFIG.environment === 'development') {
-      console.log(`🔍 Find RUP by kode ${kd_rup}:`, item ? 'found' : 'not found');
-    }
-    
-    return item || null;
-  } catch (error) {
-    console.error(`❌ Get RUP by kode ${kd_rup} Error:`, error);
-    throw error;
-  }
-}
-
-// Export API configuration untuk debugging
-export const rupApiConfig = {
-  buildUrl: buildRupApiUrl,
-  environment: API_CONFIG.environment,
-  // Jangan expose sensitive data
-  hasApiKey: !!API_CONFIG.rupApiKey,
-  hasApiSecret: !!API_CONFIG.rupApiSecret,
-};

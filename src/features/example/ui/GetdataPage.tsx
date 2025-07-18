@@ -12,7 +12,7 @@ import {
 } from '@heroui/react';
 
 // Proxy endpoint
-const RUP_API_URL = '';
+const RUP_API_URL = 'dd';
 
 const PAGE_SIZE = 100; // rows per page
 
