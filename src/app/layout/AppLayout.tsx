@@ -35,6 +35,10 @@ export default function AppLayout() {
       pageTitle = 'About';
     } else if (location.pathname === '/contact') {
       pageTitle = 'Contact';
+    } else if (location.pathname === '/products') {
+      pageTitle = 'Products';
+    } else if (location.pathname === '/rup-data') {
+      pageTitle = 'RUP Data';
     }
   //  useEffect(() => {
     
@@ -63,6 +67,7 @@ export default function AppLayout() {
           <Link to="/table" className="block p-2 rounded hover:bg-gray-700">Table</Link>
           <Link to="/rup" className="block p-2 rounded hover:bg-gray-700">Get Rup</Link>
           <Link to="/rup-data" className="block p-2 rounded hover:bg-gray-700">Rup Data</Link>
+          <Link to="/products" className="block p-2 rounded hover:bg-gray-700">Products</Link>
         </nav>
       </aside>
       <div className={`${responsive ? '' : 'hidden'}`}>

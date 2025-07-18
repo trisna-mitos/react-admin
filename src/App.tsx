@@ -7,6 +7,7 @@ import FormPage from './features/example/ui/FormPage';
 import TablePage from './features/example/ui/TablePage';
 import GetDataPage from './features/example/ui/GetdataPage';
 import RupDataPage from './features/rup-data/RupDataPage';
+import { SampleCompletePage } from './features/sample-complete-api/SampleCompletePage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="table" element={<TablePage />} />
         <Route path="rup" element={<GetDataPage />} />
         <Route path="rup-data" element={<RupDataPage />} />
+        <Route path="products" element={<SampleCompletePage />} />
       </Route>
     </Routes>
   );
